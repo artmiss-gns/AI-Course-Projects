@@ -30,6 +30,7 @@ class HillClimbing :
                 ]
             )
         )
+        self.end = False
 
     def run(self) :
         """returns a generator that yields states of optimizing puzzle
@@ -62,6 +63,10 @@ class HillClimbing :
             previous_state = tmp_state
             yield self.current_state.board
 
+        self.end = True
+        return
+
+
 
 
 if __name__ == "__main__" :
@@ -74,5 +79,10 @@ if __name__ == "__main__" :
         ]
     )
     hc = HillClimbing(initial_state)
-    for s in hc.run() :
-        print(s)
+    epoch = 0
+    while not hc.end :
+        if epoch >= 50 : # restarting after 50 iterations
+            hc = HillClimbing(initial_state)
+            epoch = 0
+        for s in hc.run() :
+            print(s)
