@@ -1,8 +1,9 @@
 import numpy as np
 from dataclasses import dataclass
 
-from utils.utils import get_states
-from heuristics import heuristic_1
+from src.utils.utils import get_states
+from src.heuristics import heuristic_1
+
 @dataclass
 class State :
     board: np.array

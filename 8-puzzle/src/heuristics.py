@@ -1,4 +1,4 @@
-from utils.state_object import State
+from src.utils.state_object import State
 
 def heuristic_1(state: State, goal_state:State) :
     """Calculates the heuristic score of the current state.
