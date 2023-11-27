@@ -72,13 +72,13 @@ def show_state(state: np.array, placeholder=st) -> pd.DataFrame:
         hide_index=True,
     )
 
-def run(initial_state: np.array) :
+def run(initial_state: np.array, heuristic_function="h1") :
     hc = HillClimbing(initial_state)
     epoch = 0
     placeholder = st.empty()
     while not hc.end :
         hc = HillClimbing(initial_state)
-        for s in hc.run() : # we should break out of this loop if we want to restart again
+        for s in hc.run(heuristic_function=heuristic_function) : # we should break out of this loop if we want to restart again
             if epoch >= 50 : # restarting after 50 iterations
                 epoch = 0
                 break
@@ -92,11 +92,6 @@ def main() :
     initial_state = get_puzzle_input()
 
     with col2 :
-        # st.markdown(
-        #     "<h1 style='text-align: center; white-space: nowrap;'>Hello world</h1>",
-        #     unsafe_allow_html=True
-        # )
-
         title_html = """
             <style>
                 .title-text {
@@ -115,8 +110,9 @@ def main() :
         st.markdown(title_html, unsafe_allow_html=True)
 
         show_state(initial_state)
+        heuristic_function = st.selectbox("Select heuristic function", options=["h1", "h2"])
         if st.button(":blue[Start]") :
-            run(initial_state)
+            run(initial_state, heuristic_function)
 
 
 main()

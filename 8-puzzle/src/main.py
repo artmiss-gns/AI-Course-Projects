@@ -2,7 +2,7 @@ import numpy as np
 from dataclasses import dataclass
 
 from src.utils.utils import get_states
-from src.heuristics import heuristic_1
+from src.heuristics import heuristic_1, heuristic_2
 
 import time
 @dataclass
@@ -34,16 +34,17 @@ class HillClimbing :
         )
         self.end = False
 
-    def run(self) :
+    def run(self, heuristic_function="h1") :
         """returns a generator that yields states of optimizing puzzle
         """
+        heuristic_function = heuristic_1 if heuristic_function=="h1" else heuristic_2
         previous_state = None
-        self.current_state.heuristic_score = heuristic_1(self.current_state, goal_state=self.goal_state)
+        self.current_state.heuristic_score = heuristic_function(self.current_state, goal_state=self.goal_state)
         while self.current_state.heuristic_score > 0 :
             data = {}
             states = get_states(self.current_state)
             for state in states :
-                heuristic_value = heuristic_1(state, goal_state=self.goal_state)
+                heuristic_value = heuristic_function(state, goal_state=self.goal_state)
                 state.heuristic_score = heuristic_value
                 data[state] = state.heuristic_score
             data = sorted(data, key=lambda state: state.heuristic_score) # sort the states based on their heuristic value
@@ -82,6 +83,7 @@ if __name__ == "__main__" :
         ]
     )
     epoch = 0
+    hc = HillClimbing(initial_state)
     while not hc.end :
         hc = HillClimbing(initial_state)
         for s in hc.run() : # we should break out of this loop if we want to restart again
