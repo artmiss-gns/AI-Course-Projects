@@ -51,19 +51,19 @@ class HillClimbing :
             tmp_state = self.current_state # ! Deep Copy needed?
             # # selecting one of top 3 results, the first result has a higher chance. This is done to prevent stucking in Local Minimum
             try : 
-                self.current_state = data[np.random.choice([0, 1, 2], p=[0.8, 0.1, 0.1])] 
+                self.current_state = data[np.random.choice([0, 1, 2], p=[0.7, 0.15, 0.15])] 
                 # self.current_state = data[0]
             except IndexError : # happens in corner blocks
-                self.current_state = data[np.random.choice([0, 1], p=[0.8, 0.2])] 
+                self.current_state = data[np.random.choice([0, 1], p=[0.7, 0.3])] 
             # making sure that we dont go back to the last step's state, it prevents us to stuck in a loop
             while previous_state is not None and np.allclose(previous_state.board, self.current_state.board, equal_nan=True) :
                 try : 
-                    self.current_state = data[np.random.choice([0, 1, 2], p=[0.8, 0.1, 0.1])] 
+                    self.current_state = data[np.random.choice([0, 1, 2], p=[0.7, 0.15, 0.15])] 
                     # self.current_state = data[1]
                 except IndexError : # happens in corner blocks
-                    self.current_state = data[np.random.choice([0, 1], p=[0.8, 0.2])] 
+                    self.current_state = data[np.random.choice([0, 1], p=[0.7, 0.3])] 
 
-            print(self.current_state.heuristic_score)
+            # print(self.current_state.heuristic_score)
             previous_state = tmp_state
             yield self.current_state.board
 
@@ -81,7 +81,6 @@ if __name__ == "__main__" :
             [6, 7, 8],
         ]
     )
-    hc = HillClimbing(initial_state)
     epoch = 0
     while not hc.end :
         hc = HillClimbing(initial_state)
