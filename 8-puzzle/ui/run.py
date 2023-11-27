@@ -14,43 +14,60 @@ def get_puzzle_input() -> np.array:
             [6, 7, 8],
         ],
     )
+        
+    initial_state = np.array(
+        [
+            [1, 2, 3],
+            [4, 5,6],
+            [7, 8, np.nan],
+        ]
+    )
+
+    # initial_state = np.array(
+    #     [
+    #         [1, 2, 3],
+    #         [4, 6, 5],
+    #         [7, 8, np.nan],
+    #     ]
+    # )
+    
     df = pd.DataFrame(initial_state, columns=["c1", "c2", "c3"])
 
+    input_placeholder = st.empty()
     # Create three columns for input
-    # col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
+    # Inputs for the first column
+    with col1:
+        st.write("c1 Inputs")
+        input_1 = st.number_input("Input 1", value=None)
+        input_2 = st.number_input("Input 2", value=None)
+        input_3 = st.number_input("Input 3", value=None)
+
+    # Inputs for the second column
+    with col2:
+        st.write("c2 Inputs")
+        input_4 = st.number_input("Input 4", value=None)
+        input_5 = st.number_input("Input 5", value=None)
+        input_6 = st.number_input("Input 6", value=None)
+
+    # Inputs for the third column
+    with col3:
+        st.write("c3 Inputs")
+        input_7 = st.number_input("Input 7", value=None)
+        input_8 = st.number_input("Input 8", value=None)
+        input_9 = st.number_input("Input 9", value=None)
 
 
-    # # Inputs for the first column
-    # with col1:
-    #     st.write("c1 Inputs")
-    #     input_1 = st.text_input("Input 1", value=df['c1'][0])
-    #     input_2 = st.text_input("Input 2", value=df['c1'][1])
-    #     input_3 = st.text_input("Input 3", value=df['c1'][2])
+    with col2 :
+        df = pd.DataFrame({
+            'c1': [input_1, input_2, input_3],
+            'c2': [input_4, input_5, input_6],
+            'c3': [input_7, input_8, input_9]
+        })
 
-    # # Inputs for the second column
-    # with col2:
-    #     st.write("c2 Inputs")
-    #     input_4 = st.text_input("Input 4", value=df['c2'][0])
-    #     input_5 = st.text_input("Input 5", value=df['c2'][1])
-    #     input_6 = st.text_input("Input 6", value=df['c2'][2])
+    state = df.to_numpy()
 
-    # # Inputs for the third column
-    # with col3:
-    #     st.write("c3 Inputs")
-    #     input_7 = st.text_input("Input 7", value=df['c3'][0])
-    #     input_8 = st.text_input("Input 8", value=df['c3'][1])
-    #     input_9 = st.text_input("Input 9", value=df['c3'][2])
-
-
-    # with col2 :
-    #     df = pd.DataFrame({
-    #         'c1': [input_1, input_2, input_3],
-    #         'c2': [input_4, input_5, input_6],
-    #         'c3': [input_7, input_8, input_9]
-    #     })
-
-    df = df.to_numpy()
-    return df
+    return state
 
 def show_state(state: np.array, placeholder=st) -> pd.DataFrame:
     placeholder.dataframe(
@@ -63,18 +80,20 @@ def run(initial_state: np.array) :
     epoch = 0
     placeholder = st.empty()
     while not hc.end :
-        if epoch >= 50 : # restarting after 50 iterations
-            hc = HillClimbing(initial_state)
-            epoch = 0
-        for s in hc.run() :
+        hc = HillClimbing(initial_state)
+        for s in hc.run() : # we should break out of this loop if we want to restart again
+            if epoch >= 50 : # restarting after 50 iterations
+                epoch = 0
+                break
             show_state(s, placeholder)
-            # time.sleep(1)
-
+            epoch += 1
 
 
 def main() :
     col1, col2, col3 = st.columns(3)
+    
     initial_state = get_puzzle_input()
+
     with col2 :
         st.header(":red[Starting State: ]")
         show_state(initial_state)
