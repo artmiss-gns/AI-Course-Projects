@@ -23,51 +23,48 @@ def get_puzzle_input() -> np.array:
         ]
     )
 
-    # initial_state = np.array(
-    #     [
-    #         [1, 2, 3],
-    #         [4, 6, 5],
-    #         [7, 8, np.nan],
-    #     ]
-    # )
     
     df = pd.DataFrame(initial_state, columns=["c1", "c2", "c3"])
-
     input_placeholder = st.empty()
-    # Create three columns for input
     col1, col2, col3 = st.columns(3)
-    # Inputs for the first column
-    with col1:
-        st.write("c1 Inputs")
-        input_1 = st.number_input("Input 1", value=None)
-        input_2 = st.number_input("Input 2", value=None)
-        input_3 = st.number_input("Input 3", value=None)
-
-    # Inputs for the second column
-    with col2:
-        st.write("c2 Inputs")
-        input_4 = st.number_input("Input 4", value=None)
-        input_5 = st.number_input("Input 5", value=None)
-        input_6 = st.number_input("Input 6", value=None)
-
-    # Inputs for the third column
-    with col3:
-        st.write("c3 Inputs")
-        input_7 = st.number_input("Input 7", value=None)
-        input_8 = st.number_input("Input 8", value=None)
-        input_9 = st.number_input("Input 9", value=None)
-
 
     with col2 :
-        df = pd.DataFrame({
-            'c1': [input_1, input_2, input_3],
-            'c2': [input_4, input_5, input_6],
-            'c3': [input_7, input_8, input_9]
-        })
+        input_placeholder.dataframe(initial_state, hide_index=True)
 
-    state = df.to_numpy()
+    # Create three columns for input
+    # Inputs for the first column
+        if input_placeholder.toggle("Set Puzzle values") :
+            with col1:
+                st.write("c1 Inputs")
+                input_1 = st.number_input("Input 1", value=None)
+                input_2 = st.number_input("Input 2", value=None)
+                input_3 = st.number_input("Input 3", value=None)
 
-    return state
+            # Inputs for the second column
+            with col2:
+                st.write("c2 Inputs")
+                input_4 = st.number_input("Input 4", value=None)
+                input_5 = st.number_input("Input 5", value=None)
+                input_6 = st.number_input("Input 6", value=None)
+
+            # Inputs for the third column
+            with col3:
+                st.write("c3 Inputs")
+                input_7 = st.number_input("Input 7", value=None)
+                input_8 = st.number_input("Input 8", value=None)
+                input_9 = st.number_input("Input 9", value=None)
+
+
+            with col2 :
+                df = pd.DataFrame({
+                    'c1': [input_1, input_2, input_3],
+                    'c2': [input_4, input_5, input_6],
+                    'c3': [input_7, input_8, input_9]
+                })
+
+        state = df.to_numpy()
+
+        return state
 
 def show_state(state: np.array, placeholder=st) -> pd.DataFrame:
     placeholder.dataframe(
@@ -95,7 +92,28 @@ def main() :
     initial_state = get_puzzle_input()
 
     with col2 :
-        st.header(":red[Starting State: ]")
+        # st.markdown(
+        #     "<h1 style='text-align: center; white-space: nowrap;'>Hello world</h1>",
+        #     unsafe_allow_html=True
+        # )
+
+        title_html = """
+            <style>
+                .title-text {
+                    font-size: 60px;
+                    font-weight: bold;
+                    text-align: center;
+                    white-space: nowrap;
+                    margin-top: 20px;
+                    margin-bottom: 20px; 
+                    color: red; 
+                }
+            </style>
+            <h1 class="title-text">Initial State</h1>
+        """
+
+        st.markdown(title_html, unsafe_allow_html=True)
+
         show_state(initial_state)
         if st.button(":blue[Start]") :
             run(initial_state)
