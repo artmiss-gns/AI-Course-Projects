@@ -19,8 +19,7 @@ def get_adjacent(
     ]
     return locs
 
-def switcher(state:State, loc) :
-    board = state.board
+def switcher(board:np.array, loc) :
     nan_loc = get_nan_loc(board)
     new_board = board.copy()
     new_board[tuple(np.ravel(nan_loc).tolist())], new_board[tuple(loc)] = new_board[tuple(loc)], new_board[tuple(np.ravel(nan_loc).tolist())]
@@ -29,11 +28,13 @@ def switcher(state:State, loc) :
 def get_states(
     state: State,
 ) :
+    board = state.board
     states = []
     adjacent_loc = get_adjacent(state)
     for loc in adjacent_loc : 
         if loc is not None :
-            state = switcher(state, loc)
+            state = switcher(board, loc) # ! DO NOT send 'state object' here, because we are keep updating it in each iteration. send board
+                                         # ! which is the current state board and we want the option paths from this state.
             state = State(
                 board=state
             )

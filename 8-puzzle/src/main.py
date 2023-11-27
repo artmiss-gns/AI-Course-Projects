@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from src.utils.utils import get_states
 from src.heuristics import heuristic_1
 
+import time
 @dataclass
 class State :
     board: np.array
@@ -38,7 +39,6 @@ class HillClimbing :
         """
         previous_state = None
         self.current_state.heuristic_score = heuristic_1(self.current_state, goal_state=self.goal_state)
-
         while self.current_state.heuristic_score > 0 :
             data = {}
             states = get_states(self.current_state)
@@ -51,22 +51,24 @@ class HillClimbing :
             tmp_state = self.current_state # ! Deep Copy needed?
             # # selecting one of top 3 results, the first result has a higher chance. This is done to prevent stucking in Local Minimum
             try : 
-                self.current_state = data[np.random.choice([0, 1, 2], p=[0.7, 0.15, 0.15])] 
+                self.current_state = data[np.random.choice([0, 1, 2], p=[0.8, 0.1, 0.1])] 
+                # self.current_state = data[0]
             except IndexError : # happens in corner blocks
                 self.current_state = data[np.random.choice([0, 1], p=[0.8, 0.2])] 
             # making sure that we dont go back to the last step's state, it prevents us to stuck in a loop
             while previous_state is not None and np.allclose(previous_state.board, self.current_state.board, equal_nan=True) :
                 try : 
-                    self.current_state = data[np.random.choice([0, 1, 2], p=[0.7, 0.15, 0.15])] 
+                    self.current_state = data[np.random.choice([0, 1, 2], p=[0.8, 0.1, 0.1])] 
+                    # self.current_state = data[1]
                 except IndexError : # happens in corner blocks
-                    self.current_state = data[np.random.choice([0, 1], p=[0.8, 0.2])]
+                    self.current_state = data[np.random.choice([0, 1], p=[0.8, 0.2])] 
 
+            print(self.current_state.heuristic_score)
             previous_state = tmp_state
             yield self.current_state.board
 
         self.end = True
         return
-
 
 
 
@@ -82,8 +84,10 @@ if __name__ == "__main__" :
     hc = HillClimbing(initial_state)
     epoch = 0
     while not hc.end :
-        if epoch >= 50 : # restarting after 50 iterations
-            hc = HillClimbing(initial_state)
-            epoch = 0
-        for s in hc.run() :
+        hc = HillClimbing(initial_state)
+        for s in hc.run() : # we should break out of this loop if we want to restart again
+            if epoch >= 50 : # restarting after 50 iterations
+                epoch = 0
+                break
             print(s)
+            epoch += 1
